@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+# main.sh - Copy keymap.json to Zed configuration directory
+# This script copies the keymap.json file to ~/.config/zed if the directory exists
+# and backs up any existing keymap.json to old.keymap.json
+
+set -e  # Exit on error
+set -u  # Exit on undefined variable
+
+# Color codes for output
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+RED='\033[0;31m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Get the directory where this script is located
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+KEYMAP_SOURCE="${SCRIPT_DIR}/keymap.json"
+ZED_CONFIG_DIR="${HOME}/.config/zed"
+KEYMAP_DEST="${ZED_CONFIG_DIR}/keymap.json"
+KEYMAP_BACKUP="${ZED_CONFIG_DIR}/old.keymap.json"
+
+echo -e "${GREEN}==> Zed Keymap Installation${NC}"
+
+# Check if source keymap.json exists
+if [[ ! -f "${KEYMAP_SOURCE}" ]]; then
+    echo -e "${RED}Error: keymap.json not found in ${SCRIPT_DIR}${NC}"
+    exit 1
+fi
+
+# Check if Zed config directory exists
+if [[ ! -d "${ZED_CONFIG_DIR}" ]]; then
+    echo -e "${YELLOW}Warning: Zed configuration directory not found at ${ZED_CONFIG_DIR}${NC}"
+    echo -e "${YELLOW}Please ensure Zed is installed and has been run at least once.${NC}"
+    exit 1
+fi
+
+# Back up existing keymap if it exists
+if [[ -f "${KEYMAP_DEST}" ]]; then
+    echo -e "${BLUE}==> Backing up existing keymap.json to old.keymap.json${NC}"
+    mv "${KEYMAP_DEST}" "${KEYMAP_BACKUP}"
+    echo -e "${GREEN}✓ Backup created at ${KEYMAP_BACKUP}${NC}"
+fi
+
+# Copy the keymap file
+echo -e "${GREEN}==> Copying keymap.json to ${ZED_CONFIG_DIR}${NC}"
+cp "${KEYMAP_SOURCE}" "${KEYMAP_DEST}"
+
+echo -e "${GREEN}✓ Successfully installed keymap.json to ${KEYMAP_DEST}${NC}"

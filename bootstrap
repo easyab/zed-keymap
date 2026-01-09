@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+# bootstrap - Update repository and install keymap
+# This script pulls the latest changes from git and runs main
+
+set -e  # Exit on error
+set -u  # Exit on undefined variable
+
+# Color codes for output
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
+# Get the directory where this script is located
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+MAIN_SCRIPT="${SCRIPT_DIR}/main"
+
+echo -e "${BLUE}==> Zed Keymap Bootstrap${NC}"
+
+# Check if we're in a git repository
+if [[ ! -d "${SCRIPT_DIR}/.git" ]]; then
+    echo -e "${RED}Error: Not a git repository. Please run this script from the zed-keymap directory.${NC}"
+    exit 1
+fi
+
+# Change to the script directory
+cd "${SCRIPT_DIR}"
+
+# Fetch and fast-forward to latest changes
+echo -e "${BLUE}==> Fetching latest changes from git...${NC}"
+git fetch
+
+echo -e "${BLUE}==> Fast-forwarding to latest commit...${NC}"
+git merge --ff-only
+
+echo -e "${GREEN}✓ Repository updated successfully${NC}"
+
+# Run the main installation script
+echo -e "${BLUE}==> Running installation script...${NC}"
+if [[ -x "${MAIN_SCRIPT}" ]]; then
+    "${MAIN_SCRIPT}"
+else
+    bash "${MAIN_SCRIPT}"
+fi
+
+echo -e "${GREEN}✓ Bootstrap complete!${NC}"
