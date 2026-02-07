@@ -19,6 +19,15 @@
     }
   },
   {
+    "context": "Editor",
+    "bindings": {
+      "alt-f": "editor::MoveToNextWordEnd",
+      "alt-b": "editor::MoveToPreviousWordStart",
+      "shift-alt-f": "editor::SelectToNextWordEnd",
+      "shift-alt-b": "editor::SelectToPreviousWordStart"
+    }
+  },
+  {
     "bindings": {
       "cmd-k cmd-b": "workspace::ToggleRightDock"
     }
